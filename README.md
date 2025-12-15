@@ -146,34 +146,34 @@ Create a `.env` file in the project root with your Azure AI Foundry credentials:
 
 ```env
 # Anthropic Models (Required)
-ANTHROPIC_API_KEY=your_anthropic_api_key_here
-ANTHROPIC_ENDPOINT=https://your-resource.services.ai.azure.com/anthropic/
-ANTHROPIC_API_VERSION=2023-06-01
-ANTHROPIC_OPUS_DEPLOYMENT=claude-opus-4.5
-ANTHROPIC_SONNET_DEPLOYMENT=claude-sonnet-4.5
-ANTHROPIC_HAIKU_DEPLOYMENT=claude-haiku-4-5
+ANTHROPIC_API_KEY="your_anthropic_api_key_here"
+ANTHROPIC_ENDPOINT="your_anthropic_endpoint_here"
+ANTHROPIC_API_VERSION="your_anthropic_api_version_here"
+ANTHROPIC_OPUS_DEPLOYMENT="your_anthropic_opus_deployment_here"
+ANTHROPIC_SONNET_DEPLOYMENT="your_anthropic_sonnet_deployment_here"
+ANTHROPIC_HAIKU_DEPLOYMENT="your_anthropic_haiku_deployment_here"
 
 # OpenAI Models (Optional)
-OPENAI_API_KEY=your_openai_api_key_here
-OPENAI_ENDPOINT=https://your-resource.services.ai.azure.com/openai/v1/
-OPENAI_GPT52_DEPLOYMENT=gpt-5.2-chat
-OPENAI_GPT51_DEPLOYMENT=gpt-5.1-chat
-OPENAI_GPT4O_MINI_DEPLOYMENT=gpt-4o-mini
+OPENAI_API_KEY="your_openai_api_key_here"
+OPENAI_ENDPOINT="your_openai_endpoint_here"
+OPENAI_GPT52_DEPLOYMENT="your_openai_gpt52_deployment_here"
+OPENAI_GPT51_DEPLOYMENT="your_openai_gpt51_deployment_here"
+OPENAI_GPT4O_MINI_DEPLOYMENT="your_openai_gpt4o_mini_deployment_here"
 
 # xAI Grok Models (Optional)
-GROK_API_KEY=your_grok_api_key_here
-GROK_ENDPOINT=https://llmaccess.services.ai.azure.com/openai/v1/
-GROK_DEPLOYMENT=grok-4-fast-non-reasoning
+GROK_API_KEY="your_grok_api_key_here"
+GROK_ENDPOINT="your_grok_endpoint_here"
+GROK_DEPLOYMENT="your_grok_deployment_here"
 
 # Mistral Models (Optional)
-MISTRAL_API_KEY=your_mistral_api_key_here
-MISTRAL_ENDPOINT=https://llmaccess.services.ai.azure.com/openai/v1/
-MISTRAL_DEPLOYMENT=Mistral-Large-3
+MISTRAL_API_KEY="your_mistral_api_key_here"
+MISTRAL_ENDPOINT="your_mistral_endpoint_here"
+MISTRAL_DEPLOYMENT="your_mistral_deployment_here"
 
 # MoonShot AI Models (Optional)
-MOONSHOT_API_KEY=your_moonshot_api_key_here
-MOONSHOT_ENDPOINT=https://llmaccess.services.ai.azure.com/openai/v1/
-MOONSHOT_DEPLOYMENT=Kimi-K2-Thinking
+MOONSHOT_API_KEY="your_moonshot_api_key_here"
+MOONSHOT_ENDPOINT="your_moonshot_endpoint_here"
+MOONSHOT_DEPLOYMENT="your_moonshot_deployment_here"
 ```
 
 ### Configuration Steps

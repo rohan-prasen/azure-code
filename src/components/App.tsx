@@ -26,19 +26,21 @@ interface AppState {
   isLoading: boolean;
   showModelSelector: boolean;
   error: string | null;
+  hasSeenLanding: boolean;
 }
 
 export function App() {
   const { exit } = useApp();
   const terminalSize = useTerminalSize();
   const [renderKey, setRenderKey] = useState(0);
-  
+
   const [state, setState] = useState<AppState>({
     currentModel: storage.getActiveModel(),
     messages: [],
     isLoading: false,
     showModelSelector: false,
     error: null,
+    hasSeenLanding: false,
   });
 
   // Refs for state stability and buffering
@@ -47,46 +49,50 @@ export function App() {
   useEffect(() => {
     stateRef.current = state;
   }, [state]);
-  
+
   const handleModelSelect = useCallback(async (modelId: string) => {
     // Clear screen to prevent UI duplication
     console.clear();
-    
+
     // Update state first
-    setState(prev => ({ 
-      ...prev, 
+    setState(prev => ({
+      ...prev,
       showModelSelector: false,
       currentModel: modelId,
       messages: [],
     }));
-    
+
     // Increment render key to force remount
     setRenderKey(prev => prev + 1);
-    
+
     await storage.setActiveModel(modelId);
   }, []);
-  
+
   const handleModelCancel = useCallback(() => {
     // Clear screen to prevent UI duplication
     console.clear();
-    
+
     setState(prev => ({ ...prev, showModelSelector: false }));
     setRenderKey(prev => prev + 1);
   }, []);
-  
+
+  const handleLandingComplete = useCallback(() => {
+    setState(prev => ({ ...prev, hasSeenLanding: true }));
+  }, []);
+
   const handleSendMessage = useCallback(async (content: string) => {
     // Access current state via ref to keep function stable
     const currentState = stateRef.current;
-    
+
     // Handle commands
     if (commandParser.isCommand(content)) {
       const parsed = commandParser.parse(content);
-      
+
       if (!parsed.isValid) {
         setState(prev => ({ ...prev, error: `Unknown command: ${parsed.command}` }));
         return;
       }
-      
+
       switch (parsed.command) {
         case 'model':
           setState(prev => ({ ...prev, showModelSelector: true }));
@@ -105,7 +111,7 @@ export function App() {
           return;
       }
     }
-    
+
     // Create user message
     const userMessage: Message = {
       id: `user-${Date.now()}`,
@@ -113,7 +119,7 @@ export function App() {
       content,
       timestamp: Date.now(),
     };
-    
+
     const assistantMessage: Message = {
       id: `assistant-${Date.now()}`,
       role: 'assistant',
@@ -121,27 +127,28 @@ export function App() {
       timestamp: Date.now(),
       modelId: currentState.currentModel,
     };
-    
+
     // Update state with user message and empty assistant message
     setState(prev => ({
       ...prev,
       messages: [...prev.messages, userMessage, assistantMessage],
       isLoading: true,
       error: null,
+      hasSeenLanding: true, // Ensure we skip landing if user sends msg
     }));
-    
+
     try {
       // Prepare context using the snapshot from the ref
       const contextManager = createContextManager(currentState.currentModel);
       const systemPrompt = getSystemPrompt(currentState.currentModel);
       const allMessages = [...currentState.messages, userMessage];
       const contextMessages = contextManager.prepareContext(systemPrompt, allMessages);
-      
+
       // Streaming State
       let accumulatedContent = '';
       let finalTokenCount = 0;
       let isComplete = false;
-      
+
       // RENDER LOOP: Decouple network stream from UI updates
       // Update UI at ~30 FPS (33ms) to prevent render flooding
       const renderInterval = setInterval(() => {
@@ -179,7 +186,7 @@ export function App() {
             : msg
         ),
       }));
-      
+
     } catch (error) {
       setState(prev => ({
         ...prev,
@@ -188,16 +195,16 @@ export function App() {
       }));
     }
   }, [exit]);
-  
+
   useInput((input, key) => {
     if (key.ctrl && input === 'c') exit();
   });
-  
+
   if (state.showModelSelector) {
     return (
-      <Box 
+      <Box
         key={`ms-${renderKey}`}
-        flexDirection="column" 
+        flexDirection="column"
         minHeight={terminalSize.height}
         width="100%"
       >
@@ -209,11 +216,11 @@ export function App() {
       </Box>
     );
   }
-  
+
   return (
-    <Box 
+    <Box
       key={`ci-${renderKey}`}
-      flexDirection="column" 
+      flexDirection="column"
       minHeight={terminalSize.height}
       width="100%"
     >
@@ -223,6 +230,8 @@ export function App() {
         isLoading={state.isLoading}
         error={state.error}
         onSendMessage={handleSendMessage}
+        skipLanding={state.hasSeenLanding}
+        onLandingComplete={handleLandingComplete}
       />
     </Box>
   );

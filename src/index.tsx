@@ -31,21 +31,21 @@ const AZURE_BLUE = '#0078D4';
 function initializeEnvironment(): boolean {
   // Load .env from current directory
   config();
-  
+
   // Validate required environment variables
   const requiredVars = [
     'ANTHROPIC_API_KEY',
     'ANTHROPIC_ENDPOINT',
   ];
-  
+
   const missing: string[] = [];
-  
+
   for (const varName of requiredVars) {
     if (!process.env[varName]) {
       missing.push(varName);
     }
   }
-  
+
   if (missing.length > 0) {
     console.error(chalk.red('\nMissing required environment variables:'));
     for (const varName of missing) {
@@ -54,7 +54,7 @@ function initializeEnvironment(): boolean {
     console.error(chalk.yellow('\nPlease configure these in your .env file.\n'));
     return false;
   }
-  
+
   return true;
 }
 
@@ -98,22 +98,22 @@ async function main(): Promise<void> {
       console.error(chalk.red('\nCommand Prompt (cmd.exe) is not supported.\n'));
       process.exit(1);
     }
-    
+
     // Initialize environment
     const envValid = initializeEnvironment();
     if (!envValid) {
       process.exit(1);
     }
-    
+
     // Launch interactive interface with loading animation
     // Clear screen initially to start fresh
     console.clear();
-    
+
     const instance = render(<MainApp />, {
       exitOnCtrlC: false,
       patchConsole: false,
     });
-    
+
   } catch (error) {
     console.error(chalk.red('\nFatal error during initialization:'));
     console.error(error);
